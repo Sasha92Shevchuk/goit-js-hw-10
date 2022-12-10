@@ -17,4 +17,40 @@ body {
   padding: 8px;
   max-width: 320px;
   margin-bottom: 16px;
+  margin-top: 100px;
+  margin-left: 40px;
+  /* margin-right: auto; */
+  display: flex;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 0;
+}
+p {
+  margin: 0;
+  font-style: normal;
+  font-weight: bold;
+}
+span {
+  font-weight: normal;
+}
+.country-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 40px;
+}
+
+.country-info {
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+h3 {
+  margin: 0;
 }
