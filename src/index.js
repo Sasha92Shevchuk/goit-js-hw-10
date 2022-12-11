@@ -41,13 +41,13 @@ function onInputHandler(e) {
       Notify.failure('Oops, there is no country with that name', {
         timeout: 3000,
       });
+      clearInfo();
     });
 }
 inputEl.addEventListener('input', debounce(onInputHandler, DEBOUNCE_DELAY));
 
 function render(articles) {
-  countryListRef.innerHTML = '';
-  countryInfoRef.innerHTML = '';
+  clearInfo();
 
   const countriesName = articles.map(({ name, flags }) => {
     return `<li class="item">
@@ -68,4 +68,9 @@ function render(articles) {
     countryListRef.insertAdjacentHTML('beforeend', countriesName.join(''));
     countryInfoRef.insertAdjacentHTML('beforeend', countriesInfo.join(''));
   }
+}
+
+function clearInfo() {
+  countryListRef.innerHTML = '';
+  countryInfoRef.innerHTML = '';
 }
