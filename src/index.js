@@ -1,10 +1,14 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { fetchCountries } from './fetchCountries';
 
 // body.style.backgroundImage =
 //   'url(https://cdn.pixabay.com/photo/2021/05/08/10/14/circles-6238091_960_720.jpg)';
 const DEBOUNCE_DELAY = 300;
+
+const endPoint = 'https://restcountries.com/v3.1/name/';
+const searchParams = '?fields=name,capital,population,flags,languages';
 
 const inputEl = document.querySelector('input#search-box');
 const countryListRef = document.querySelector('.country-list');
@@ -12,25 +16,31 @@ const countryInfoRef = document.querySelector('.country-info');
 
 function onInputHandler(e) {
   const inputValue = e.target.value.trim();
-  const urlAPI = `https://restcountries.com/v3.1/name/${inputValue}?fields=name,capital,population,flags,languages`;
+  const urlAPI = `${endPoint}${inputValue}${searchParams}`;
   if (inputValue === '') {
     countryListRef.innerHTML = '';
     return;
   }
-  fetch(urlAPI)
-    .then(response => {
-      //   if (!response.ok)
-      if (response.status !== 200) {
-        throw new Error(response.statusText);
-      }
-      return response.json();
-    })
+
+  fetchCountries(inputValue)
     .then(country => {
-      console.log(country);
+      //   console.log(country);
+      if (country.length > 10) {
+        Notify.info(
+          'Too many matches found. Please enter a more specific name.',
+          {
+            timeout: 3000,
+          }
+        );
+        countryListRef.innerHTML = '';
+        return;
+      }
       render(country);
     })
     .catch(error => {
-      console.log(error);
+      Notify.failure('Oops, there is no country with that name', {
+        timeout: 3000,
+      });
     });
 }
 inputEl.addEventListener('input', debounce(onInputHandler, DEBOUNCE_DELAY));
@@ -52,8 +62,8 @@ function render(articles) {
   <p class="languages">Languages: <span>${Object.values(languages)}</span></p>`;
   });
 
-  if (articles.length < 2) {
-    countryInfoRef.insertAdjacentHTML('beforeend', countriesInfo.join(''));
+  if (articles.length !== 1) {
+    countryListRef.insertAdjacentHTML('beforeend', countriesName.join(''));
   } else {
     countryListRef.insertAdjacentHTML('beforeend', countriesName.join(''));
     countryInfoRef.insertAdjacentHTML('beforeend', countriesInfo.join(''));
